@@ -1,0 +1,22 @@
+name: Test site
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+      - name: Install and build
+        run: |
+          bundle install
+          bundle exec jekyll build
+      - name: Run html-proofer
+        run: bundle exec htmlproofer ./_site --check-html --allow_hash_href --only-4xx --assume-extension --timeframe 6m
